@@ -1,5 +1,6 @@
-// pages/api/edit.js
+import { NextRequest, NextResponse } from 'next/server';
 import { createConnection } from 'mysql2/promise';
+
 
 // Function to create a MySQL connection
 async function connectToDatabase() {
@@ -11,36 +12,27 @@ async function connectToDatabase() {
   });
 }
 
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
-
-  const user_id = req.body.user_id;
-
-  if (!user_id) {
-    return res.status(400).json({ error: 'user_id is required in the request body.' });
-  }
+export async function GET (req:NextRequest , context:{params:{id:string}}){
 
   try {
     // Connect to the database
     const connection = await connectToDatabase();
-
     // Execute a query to retrieve data from the "User" table
-    const [rows] = await connection.execute('SELECT * FROM users WHERE id = ?', [user_id]);
+    
+    const [rows] = await connection.execute('SELECT * FROM users WHERE is_active = 0 AND id = '+context.params.id, );
 
     // Check if the User exists
-    if (rows.length === 0) {
-      return res.status(404).json({ error: 'User not found.' });
-    }
+     if (Array.isArray(rows) && rows.length===0) {
+       return new NextResponse(JSON.stringify({error: 'User not found.'}), {status: 404});
+     }
 
     // Close the database connection
     await connection.end();
 
     // Respond with the User data
-    res.status(200).json(rows);
+    return new NextResponse(JSON.stringify(rows), {status: 200});
   } catch (error) {
     console.error('Error connecting to the database:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    return new NextResponse(JSON.stringify({error: 'Internal Server Error'}), {status: 500});
   }
-}
+} 

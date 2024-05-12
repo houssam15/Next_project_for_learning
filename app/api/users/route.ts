@@ -1,5 +1,6 @@
-// pages/api/read.js
+import { NextRequest, NextResponse } from 'next/server';
 import { createConnection } from 'mysql2/promise';
+
 
 // Function to create a MySQL connection
 async function connectToDatabase() {
@@ -11,10 +12,8 @@ async function connectToDatabase() {
   });
 }
 
-export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
+export async function GET (req:NextRequest , context:{params:{username:string}}){
+  //console.log(request.nextUrl.searchParams.get("username"))
 
   try {
     // Connect to the database
@@ -22,19 +21,18 @@ export default async function handler(req, res) {
 
     // Execute a query to retrieve data from the "User" table
     const [rows] = await connection.execute('SELECT * FROM users WHERE is_active = 1', );
-
     // Check if the User exists
-    if (rows.length === 0) {
-      return res.status(404).json({ error: 'User not found.' });
-    }
+     if (Array.isArray(rows) && rows.length===0) {
+       return new NextResponse(JSON.stringify({error: 'User not found.'}), {status: 404});
+     }
 
     // Close the database connection
     await connection.end();
 
     // Respond with the User data
-    res.status(200).json(rows);
+    return new NextResponse(JSON.stringify(rows), {status: 200});
   } catch (error) {
     console.error('Error connecting to the database:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    return new NextResponse(JSON.stringify({error: 'Internal Server Error'}), {status: 500});
   }
-}
+} 

@@ -8,7 +8,7 @@ async function connectToDatabase() {
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'crud_db',
+    database: 'learning_crud_db',
   });
 }
 

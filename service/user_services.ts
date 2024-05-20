@@ -1,26 +1,34 @@
-import {User} from "../database/models";
 import bcrypt from 'bcrypt';
+
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient();
+
+
 
 export async function create_user({username , email , password , phone}){
 
     const hashedPassword = await bcrypt.hash(password, 10); 
 
-    const user = await User.create({
-        username : username ,
-        email : email ,
-        password : hashedPassword,
-        phone : phone
+    const user = await prisma.user.create({
+        data:{
+           email,
+           password:hashedPassword,
+           username,
+        }
     });
 
-    return user.dataValues;
+    console.log(user)    
+
+   return user;
 
 }
 
 export async function fetch_users(){
 
-    const users = await User.findAll();
+   // const users = await User.findAll();
 
-    return users;
+   // return users;
 
 }
 

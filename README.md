@@ -1,1 +1,1 @@
-# Next_project_for_learning
+- npx prisma migrate dev --name init

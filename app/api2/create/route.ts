@@ -16,9 +16,11 @@ export async function POST (req:NextRequest){
       const newUser = await UserService.create_user({username:name , email:email , password:password , phone:phone});
       
       // Respond with the User data
-      return new NextResponse(JSON.stringify({ id:  newUser.dataValues.id , message: 'User created successfully' }), {status: 200});
+      return new NextResponse(JSON.stringify({/* id:  newUser.dataValues.id ,*/ message: 'User created successfully' }), {status: 200});
     } catch (error) {
       console.error('Error connecting to the database:', error);
       return new NextResponse(JSON.stringify({error: 'Internal Server Error'}), {status: 500});
     }
-  } 
+} 
+
+

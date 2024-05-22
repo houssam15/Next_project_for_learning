@@ -15,4 +15,7 @@ model user {
   email     String  @unique
   username  String  @db.VarChar(30)
   password  String  @db.VarChar(200)
+  phone     String  @db.VarChar(10)
 }
+
+

@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 
 
-export async function create_user({username , email , password , phone}){
+export async function createUser({username , email , password , phone}){
 
     const hashedPassword = await bcrypt.hash(password, 10); 
 
@@ -15,20 +15,44 @@ export async function create_user({username , email , password , phone}){
            email,
            password:hashedPassword,
            username,
+           phone
         }
     });
-
-    console.log(user)    
-
    return user;
-
 }
 
-export async function fetch_users(){
 
-   // const users = await User.findAll();
 
-   // return users;
 
+export async function findAllUsers(){
+   const users = await prisma.user.findMany({select:{id:true ,username:true,email:true , phone:true}});
+   return users;
+}
+
+
+
+
+export async function findUserById({id/*,name*/}:Required<{id:number}>/* & {name?:string}*/ ){
+   const user = await prisma.user.findUnique({where:{id},select:{id:true ,username:true,email:true , phone:true}});
+   return user;
+}
+
+
+
+export async function deleteUserById({id}:Required<{id:number}>){
+   const result = await prisma.user.delete({where:{id}});
+   return result;
+}
+
+
+export async function updateUserById({id , data}:Required<{id:number}> & {data:Record<string,any>}){
+   const result = await prisma.user.update({where:{id},data:{...data} ,  select: {
+      id: true,
+      username: true,
+      email: true,
+    }});
+   
+   return result;
+   
 }
 

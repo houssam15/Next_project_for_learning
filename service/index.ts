@@ -1,8 +1,11 @@
-import {create_user,fetch_users}  from  "./user_services";
+import {createUser,findAllUsers, findUserById , deleteUserById , updateUserById}  from  "./user_services";
 
 const UserService={
-    create_user,
-    fetch_users
+    createUser,
+    findAllUsers,
+    findUserById,
+    deleteUserById,
+    updateUserById
 }
 
 export {

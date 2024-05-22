@@ -13,7 +13,6 @@ async function connectToDatabase() {
 }
 
 export async function GET (req:NextRequest , context:{params:{id:string}}){
-
   try {
     // Connect to the database
     const connection = await connectToDatabase();

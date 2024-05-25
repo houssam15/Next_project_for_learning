@@ -38,3 +38,17 @@ export async function getUserById({id}){
     return result;
  }
 
+ export async function updateUserById({id,username , email , password }){
+    const hashedPassword = await bcrypt.hash(password, 10); 
+
+    const result = await prisma.user.update({
+        where : {id},
+        data:{
+            email,
+            password:hashedPassword,
+            username,
+         }
+    })
+    return result;
+ }
+
